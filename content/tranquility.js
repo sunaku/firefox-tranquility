@@ -53,7 +53,7 @@ var Tranquility = {
     onLoad: function() {
 
         // initialization code
-        Components.utils.import("resource://gre/modules/PopupNotifications.jsm");
+        // Components.utils.import("resource://gre/modules/PopupNotifications.jsm");
 
         var menu = document.getElementById("contentAreaContextMenu");
         menu.addEventListener("popupshowing", Tranquility.onRightClick, false);
@@ -125,20 +125,20 @@ var Tranquility = {
 
     onLinkRightClickContextMenu: function(url) {
 
-        var strBundle = document.getElementById("tranquility-string-bundle");
-        var notifyString = strBundle.getString('waitingForLoadNotification');
+        // var strBundle = document.getElementById("tranquility-string-bundle");
+        // var notifyString = strBundle.getString('waitingForLoadNotification');
         var newTabBrowser1 = gBrowser.getBrowserForTab(gBrowser.addTab(url));
-        var lnotification = PopupNotifications.show(newTabBrowser1,
-                                                    "tranquility_notify_doc_loading",
-                                                    notifyString,
-                                                    null, /* anchor ID */
-                                                    null, /* main action */
-                                                    null, /* secondary actions */
-                                                    { /* options */
-                                                    persistWhileVisible: true,
-                                                    timeout: Date.now + 60000
-                                                    }
-                                                );
+        // var lnotification = PopupNotifications.show(newTabBrowser1,
+                                                    // "tranquility_notify_doc_loading",
+                                                    // notifyString,
+                                                    // null, [> anchor ID <]
+                                                    // null, [> main action <]
+                                                    // null, [> secondary actions <]
+                                                    // { [> options <]
+                                                    // persistWhileVisible: true,
+                                                    // timeout: Date.now + 60000
+                                                    // }
+                                                // );
 
         var linkRightClickListener = function(e) {
             if((e.originalTarget.nodeName == '#document') &&
@@ -146,7 +146,7 @@ var Tranquility = {
                 Tranquility.gDOMLoaded[newTabBrowser1.currentURI.spec] = true;
                 Tranquility.onToolBarOrKeyboard(newTabBrowser1, null);
                 newTabBrowser1.removeEventListener("DOMContentLoaded", linkRightClickListener, true);
-                lnotification.remove();
+                // lnotification.remove();
             }
         };
 
@@ -249,24 +249,24 @@ var Tranquility = {
         // for contentDoc.readyState == "complete"; but process even if we reach
         // contentDoc.readyState == "interactive";
         // this also improves the user experience (reduced wait times)
-        var strBundle = document.getElementById("tranquility-string-bundle");
-        var notifyString = strBundle.getString('waitingForLoadNotification');
-        var lnotification = PopupNotifications.show(newTabBrowser,
-                                                  "tranquility_notify_doc_loading",
-                                                  notifyString,
-                                                  null, /* anchor ID */
-                                                  null, /* main action */
-                                                  null, /* secondary actions */
-                                                  { /* options */
-                                                   persistWhileVisible: true,
-                                                   timeout: Date.now + 60000
-                                                  }
-                                                 );
+        // var strBundle = document.getElementById("tranquility-string-bundle");
+        // var notifyString = strBundle.getString('waitingForLoadNotification');
+        // var lnotification = PopupNotifications.show(newTabBrowser,
+                                                  // "tranquility_notify_doc_loading",
+                                                  // notifyString,
+                                                  // null, [> anchor ID <]
+                                                  // null, [> main action <]
+                                                  // null, [> secondary actions <]
+                                                  // { [> options <]
+                                                   // persistWhileVisible: true,
+                                                   // timeout: Date.now + 60000
+                                                  // }
+                                                 // );
 
         // If document has loaded sufficiently, process at once
         if((contentDoc.readyState == "interactive") || (contentDoc.readyState == "complete")) {
             Tranquility.processToolBarOrKeyBoard(newTabBrowser);
-            lnotification.remove();
+            // lnotification.remove();
         }
         // else, wait for DOMContentLoaded and then process
         else {
@@ -278,7 +278,7 @@ var Tranquility = {
                     Tranquility.gDOMLoaded[thisURL] = true;
                     Tranquility.processToolBarOrKeyBoard(newTabBrowser);
                     newTabBrowser.removeEventListener("DOMContentLoaded", domLoadedListener, true);
-                    lnotification.remove();
+                    // lnotification.remove();
                 }
             }
         };
@@ -434,26 +434,26 @@ var Tranquility = {
                 return false;
             }
             continueProcessing = false;
-            var strBundle = document.getElementById("tranquility-string-bundle");
-            var notifyString = strBundle.getString('insufficientContentNotification');
-            var fnotification = PopupNotifications.show(newTabBrowser,
-                                                        "tranquility_notify_doc_loading",
-                                                        notifyString,
-                                                        null, /* anchor ID */
-                                                        /* main action */
-                                                        {
-                                                            label: "Process Anyway!",
-                                                            accessKey: "C",
-                                                            callback: function() {
-                                                                continueProcessing = true;
-                                                            }
-                                                        },
-                                                        null, /* secondary actions */
-                                                        { /* options */
-                                                            persistWhileVisible: true,
-                                                            timeout: Date.now + 5000
-                                                        }
-                                                    );
+            // var strBundle = document.getElementById("tranquility-string-bundle");
+            // var notifyString = strBundle.getString('insufficientContentNotification');
+            // var fnotification = PopupNotifications.show(newTabBrowser,
+                                                        // "tranquility_notify_doc_loading",
+                                                        // notifyString,
+                                                        // null, [> anchor ID <]
+                                                        // [> main action <]
+                                                        // {
+                                                            // label: "Process Anyway!",
+                                                            // accessKey: "C",
+                                                            // callback: function() {
+                                                                // continueProcessing = true;
+                                                            // }
+                                                        // },
+                                                        // null, [> secondary actions <]
+                                                        // { [> options <]
+                                                            // persistWhileVisible: true,
+                                                            // timeout: Date.now + 5000
+                                                        // }
+                                                    // );
 
             setTimeout(function () {
                 fnotification.remove();
@@ -968,19 +968,19 @@ var Tranquility = {
                 Tranquility.onLinkRightClickContextMenu(url);
             }
             else {
-                var strBundle = document.getElementById("tranquility-string-bundle");
-                var notifyString = strBundle.getString('waitingForLoadNotification');
-                var lnotification = PopupNotifications.show(newTabBrowser,
-                                                            "tranquility_notify_doc_loading",
-                                                            notifyString,
-                                                            null, /* anchor ID */
-                                                            null, /* main action */
-                                                            null, /* secondary actions */
-                                                            { /* options */
-                                                                persistWhileVisible: true,
-                                                                timeout: Date.now + 60000
-                                                            }
-                                                        );
+                // var strBundle = document.getElementById("tranquility-string-bundle");
+                // var notifyString = strBundle.getString('waitingForLoadNotification');
+                // var lnotification = PopupNotifications.show(newTabBrowser,
+                                                            // "tranquility_notify_doc_loading",
+                                                            // notifyString,
+                                                            // null, [> anchor ID <]
+                                                            // null, [> main action <]
+                                                            // null, [> secondary actions <]
+                                                            // { [> options <]
+                                                                // persistWhileVisible: true,
+                                                                // timeout: Date.now + 60000
+                                                            // }
+                                                        // );
 
                 var linkLeftClickListener = function(e) {
                     if((e.originalTarget.nodeName == "#document") &&
@@ -990,7 +990,7 @@ var Tranquility = {
                         Tranquility.onToolBarOrKeyboard(newTabBrowser, null);
                         newTabBrowser.removeEventListener("DOMContentLoaded", linkLeftClickListener, true);
                         e.originalTarget.defaultView.focus(); // otherwise, spacebar does not scroll in continuous tranquil browsing mode
-                        lnotification.remove();
+                        // lnotification.remove();
                     }
                 };
                 newTabBrowser.addEventListener("DOMContentLoaded", linkLeftClickListener, true);
