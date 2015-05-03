@@ -1,0 +1,11 @@
+content tranquility content/ 
+overlay chrome://browser/content/browser.xul chrome://tranquility/content/tranquility.xul
+
+locale tranquility en-US locale/en-US/
+
+skin tranquility classic/1.0 skin/
+style chrome://global/content/customizeToolbar.xul chrome://tranquility/skin/tranquility.css
+
+resource tranquility content/
+
+resource tranquility-icons skin/

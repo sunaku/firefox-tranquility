@@ -1,0 +1,52 @@
+<!ENTITY tranquility "Tranquility!">
+<!ENTITY tranquility.run "Run Tranquility!">
+<!ENTITY tranquility_prefs "Tranquility Preferences">
+<!ENTITY tranquility_readlater "Read Later">
+<!ENTITY tranquility_view_offline_files "View Offline Files">
+<!ENTITY prefs-pane-1.label "Tranquility Preferences">
+<!ENTITY title.label "Tranquility Preferences">
+<!ENTITY tranquility.background.colors.label "Background/Color Preferences">
+<!ENTITY tranquility.fonts.label "Font Preferences">
+<!ENTITY tranquility.extras.label "Other Preferences">
+<!ENTITY backgroundimg.label "Enable Background Image">
+<!ENTITY tranquility.backgroundColor.label "Background Color:">
+<!ENTITY tranquility.defaultBackgroundColor.label "Use Default Background Color">
+<!ENTITY tranquility.fontColor.label "Font Color:">
+<!ENTITY tranquility.defaultFontColor.label "Use Default Font Color">
+<!ENTITY tranquility.linkColor.label "Link Color:">
+<!ENTITY tranquility.annotationHighlightColor.label "Annotation Highlight Color:">
+<!ENTITY tranquility.defaultLinkColor.label "Use Default Link Color">
+<!ENTITY tranquility.tranquilBrowsingMode.label "Enable Tranquil Browsing">
+<!ENTITY tranquility.enableSingleKeyMode.label "Enable Single Key Shortcut (PAUSE/BREAK)">
+<!ENTITY tranquility.wikiLanguage.label "Wikipedia Language: ">
+<!ENTITY tranquility.pruningStrategy.label "Pruning Strategy: ">
+<!ENTITY tranquility.conservativePruningStrategy.label "Conservative">
+<!ENTITY tranquility.moderatePruningStrategy.label "Moderate">
+<!ENTITY tranquility.aggressivePruningStrategy.label "Aggressive!">
+<!ENTITY fontname.label "Set Font Name">
+<!ENTITY fontsize.label "Set Font Size">
+<!ENTITY separate.label "Tranquility">
+<!ENTITY cancel.label "Cancel">
+<!ENTITY apply.label "Apply">
+<!ENTITY close.label "Close">
+<!ENTITY tranquility.fontName.label "Font Name:">
+<!ENTITY tranquility.fontSize.label "Font Size:">
+<!ENTITY tranquility.fontName "font name">
+<!ENTITY tranquility.fontSize "font size">
+<!ENTITY tranquility.defaultwidth.label "Reading Width:">
+<!ENTITY tranquility.defaultlineheight.label "Line Height:">
+<!ENTITY tranquility.defaultalign.label "Text Align:">
+<!ENTITY tranquility.alignLeft.label "Left">
+<!ENTITY tranquility.alignJustify.label "Justify">
+<!ENTITY tranquility.alignRight.label "Right">
+<!ENTITY tranquility.dictionary "Tranquility Wiktionary">
+<!ENTITY tranquility.wikipedia "Tranquility Wikipedia">
+<!ENTITY tranquility.annotation "Tranquility - Add Annotation">
+<!ENTITY tranquility.autoScroll.label "Enable Auto-Scrolling">
+<!ENTITY tranquility.autoScrollSpeed.label "Auto-Scrolling pixels/min">
+<!ENTITY tranquility.toolbarmenu.accesskey "T">
+<!ENTITY tranquility.toolbarmenu.runkey "T">
+<!ENTITY tranquility.toolbarmenu.prefskey "P">
+<!ENTITY tranquility.toolbarmenu.readlaterkey "A">
+<!ENTITY tranquility.toolbarmenu.viewofflinefileskey "A">
+

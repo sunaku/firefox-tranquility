@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css"  type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://tranquility/locale/tranquility.dtd">
+
+<prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+        id="tranquility-prefs-window"
+        title="&title.label;">
+
+  <prefpane id="tranquility-pane-1" label="&prefs-pane-1.label;">
+
+    <preferences>
+      <preference id="tranquility-background-image-pref"
+                  name="extensions.tranquility.useBackgroundImage"
+                  type="bool"/>
+      <preference id="tranquility-default-font-pref"
+                  name="extensions.tranquility.defaultFont"
+                  type="string"/>
+      <preference id="tranquility-default-fontsize-pref"
+                  name="extensions.tranquility.defaultFontSize"
+                  type="int"/>
+      <preference id="tranquility-default-width-pref"
+                  name="extensions.tranquility.defaultWidthPctg"
+                  type="int"/>
+      <preference id="tranquility-default-lineheight-pref"
+                  name="extensions.tranquility.defaultLineHeightPctg"
+                  type="int"/>
+      <preference id="tranquility-default-align-pref"
+                  name="extensions.tranquility.defaultAlign"
+                  type="string"/>
+      <preference id="tranquility-tranquilbrowsingmode-pref"
+                  name="extensions.tranquility.tranquilBrowsingMode"
+                  type="bool"/>
+      <preference id="tranquility-enablesinglekeymode-pref"
+                  name="extensions.tranquility.enableSingleKeyMode"
+                  type="bool"/>
+      <preference id="tranquility-background-color-pref"
+                  name="extensions.tranquility.backgroundColor"
+                  type="string"/>
+      <preference id="tranquility-use-default-background-color-pref"
+                  name="extensions.tranquility.useDefaultBackgroundColor"
+                  type="bool"/>
+      <preference id="tranquility-font-color-pref"
+                  name="extensions.tranquility.fontColor"
+                  type="string"/>
+      <preference id="tranquility-use-default-font-color-pref"
+                  name="extensions.tranquility.useDefaultFontColor"
+                  type="bool"/>
+      <preference id="tranquility-link-color-pref"
+                  name="extensions.tranquility.linkColor"
+                  type="string"/>
+      <preference id="tranquility-use-default-link-color-pref"
+                  name="extensions.tranquility.useDefaultLinkColor"
+                  type="bool"/>
+      <preference id="tranquility-annotation-highlight-color-pref"
+                  name="extensions.tranquility.annotationHighlightColor"
+                  type="string"/>
+      <preference id="tranquility-wiki-language-pref"
+                  name="extensions.tranquility.wikiLanguage"
+                  type="string"/>
+      <preference id="tranquility-pruning-strategy-pref"
+                  name="extensions.tranquility.pruningStrategy"
+                  type="string"/>
+    </preferences>
+ 
+    <groupbox>
+      <caption label="&tranquility.background.colors.label;" />
+      <vbox>
+        <checkbox id="tranquility-image-checkbox" 
+                  preference="tranquility-background-image-pref" 
+                  label="&backgroundimg.label;"/>
+        <checkbox id="tranquility-use-default-background-color-checkbox" 
+                  preference="tranquility-use-default-background-color-pref" 
+                  label="&tranquility.defaultBackgroundColor.label;"/>
+        <checkbox id="tranquility-use-default-font-color-checkbox" 
+                  preference="tranquility-use-default-font-color-pref" 
+                  label="&tranquility.defaultFontColor.label;"/>
+        <grid>
+          <columns>
+            <column flex="1" />
+            <column />
+          </columns>
+          <rows>
+            <row align="center">
+              <label value="&tranquility.backgroundColor.label;" />
+              <colorpicker type="button" id="tranquility-background-color-button" 
+                       preference="tranquility-background-color-pref" flex="1" />
+            </row>
+            <row align="center">
+              <label value="&tranquility.fontColor.label;" />
+              <colorpicker type="button" id="tranquility-font-color-button" 
+                       preference="tranquility-font-color-pref" flex="1" />
+            </row>
+            <row align="center">
+              <label value="&tranquility.linkColor.label;" />
+              <colorpicker type="button" id="tranquility-link-color-button" 
+                       preference="tranquility-link-color-pref" flex="1" />
+            </row>
+            <row align="center">
+              <label value="&tranquility.annotationHighlightColor.label;" />
+              <colorpicker type="button" id="tranquility-annotation-highlight-color-button" 
+                       preference="tranquility-annotation-highlight-color-pref" flex="1" />
+            </row>
+          </rows>
+        </grid>
+      </vbox>
+    </groupbox>
+    <separator class="groove"/>
+    <groupbox>
+      <caption label="&tranquility.fonts.label;" />
+      <vbox>
+        <grid>
+          <columns>
+            <column flex="1" />
+            <column />
+          </columns>
+          <rows>
+            <row align="center">
+              <label value="&tranquility.fontName.label;" />
+              <menulist id="tranquility-default-font-menulist" preference="tranquility-default-font-pref">
+                 <menupopup id="tranquility-default-font-menupopup">
+                 </menupopup>
+            </menulist>
+            </row>
+            <row align="center">
+              <label value="&tranquility.fontSize.label;" />
+              <menulist id="tranquility-default-fontsize-menulist" preference="tranquility-default-fontsize-pref">
+                 <menupopup id="tranquility-default-fontsize-menupopup">
+                 </menupopup>
+            </menulist>
+            </row>
+          </rows>
+        </grid>
+      </vbox>
+    </groupbox>
+    <separator class="groove"/>
+    <groupbox>
+      <caption label="&tranquility.extras.label;" />
+      <vbox>
+        <checkbox id="tranquility-tranquilbrowsingmode-checkbox" 
+                  preference="tranquility-tranquilbrowsingmode-pref" 
+                  label="&tranquility.tranquilBrowsingMode.label;"/>
+        <checkbox id="tranquility-enablesinglekeymode-checkbox" 
+                  preference="tranquility-enablesinglekeymode-pref" 
+                  label="&tranquility.enableSingleKeyMode.label;"/>
+        <grid>
+          <columns>
+            <column flex="1" />
+            <column />
+          </columns>
+          <rows>
+            <row align="center">
+              <label value="&tranquility.defaultwidth.label;" />
+              <textbox type="number" id="tranquility-default-width-textbox" 
+                       preference="tranquility-default-width-pref" min="1" max="90" flex="1" />
+            </row>
+            <row align="center">
+              <label value="&tranquility.defaultlineheight.label;" />
+              <textbox type="number" id="tranquility-default-lineheight-textbox" 
+                       preference="tranquility-default-lineheight-pref" min="100" max="200" increment="10" flex="1" />
+            </row>
+            <row align="center">
+              <label value="&tranquility.defaultalign.label;" />
+              <menulist id="tranquility-default-align-menulist" preference="tranquility-default-align-pref"> 
+                 <menupopup id="tranquility-default-align-menupopup">
+                   <menuitem label="&tranquility.alignLeft.label;" value="left" />
+                   <menuitem label="&tranquility.alignJustify.label;" value="justify" />
+                   <menuitem label="&tranquility.alignRight.label;" value="right" />
+                 </menupopup>
+            </menulist>
+            </row>
+            <row align="center">
+              <label value="&tranquility.wikiLanguage.label;" />
+              <menulist id="tranquility-wiki-language-menulist" preference="tranquility-wiki-language-pref">
+                 <menupopup id="tranquility-wiki-language-menupopup">
+                 </menupopup>
+            </menulist>
+            </row>
+            <row align="center">
+              <label value="&tranquility.pruningStrategy.label;" />
+              <menulist id="tranquility-pruning-strategy-menulist" preference="tranquility-pruning-strategy-pref">
+                 <menupopup id="tranquility-pruning-strategy-menupopup">
+                   <menuitem label="&tranquility.conservativePruningStrategy.label;" value="Conservative" />
+                   <menuitem label="&tranquility.moderatePruningStrategy.label;" value="Moderate" />
+                   <menuitem label="&tranquility.aggressivePruningStrategy.label;" value="Aggressive" />
+                 </menupopup>
+            </menulist>
+            </row>
+          </rows>
+        </grid>
+      </vbox>
+    </groupbox>
+
+  </prefpane>
+ 
+  <script language="javascript" src="resource://tranquility/tranquility_options_xul.js"/>
+
+</prefwindow>

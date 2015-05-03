@@ -1,0 +1,56 @@
+#tranquility-toolbar-button {
+  list-style-image: URL("chrome://tranquility/skin/tranquility_icon_small.png");
+}
+
+#tranquility-toolbar-menu {
+  list-style-image: url("chrome://tranquility/skin/tranquility_icon_small.png");
+}
+
+#tranquility-toolbar-run {
+  list-style-image: url("chrome://tranquility/skin/tranquility_icon_small.png");
+}
+
+#tranquility-toolbar-prefs {
+  list-style-image: url("chrome://tranquility/skin/tranquility_icon_small.png");
+}
+
+#tranquility-link-rightclick-context {
+  list-style-image: url("chrome://tranquility/skin/tranquility_icon_small.png");
+}
+
+#tranquility-selection-rightclick-context {
+  list-style-image: url("chrome://tranquility/skin/tranquility_icon_small.png");
+}
+
+#tranquility-selection-rightclick-context-wikipedia {
+  list-style-image: url("chrome://tranquility/skin/tranquility_icon_small.png");
+}
+
+#tranquility-selection-rightclick-context-dictionary {
+  list-style-image: url("chrome://tranquility/skin/tranquility_icon_small.png");
+}
+
+/*
+.panel-arrowcontent {
+  background-color: yellow;
+  color: black;
+  border-radius: 10px;
+}
+
+.panel-inner-arrowcontent {
+  background-color: yellow;
+  color: black;
+  border-radius: 10px;
+}
+*/
+
+#tranquility_notify_doc_loading-notification { 
+  background-color: yellow;
+  color: black;
+  border-radius: 10px;
+}
+
+.popup-notification-icon[popupid="tranquility_notify_doc_loading"] {
+  list-style-image: url("chrome://tranquility/skin/tranquility_icon_notify.png");
+}
+
