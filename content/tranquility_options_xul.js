@@ -33,15 +33,15 @@
            fontsizelist.selectedItem = mitem;
         }
     }
-    
+
     var wikiLanguages = { "English":"en",  "Simple English":"simple",
                           "العربية":"ar", "Bahasa Indonesia":"id",
-                          "Bahasa Melayu":"ms", "Български":"bg", "Català":"ca", 
+                          "Bahasa Melayu":"ms", "Български":"bg", "Català":"ca",
                           "Česky":"cs", "Dansk":"da", "Deutsch":"de", "Eesti":"et",
                           "Ελληνικά":"el", "Español":"es", "Esperanto":"eo", "Euskara":"eu",
                           "فارسی":"fa", "Français":"fr", "Galego":"gl", "한국어":"ko",
                           "עברית":"he", "Hrvatski":"hr", "Italiano":"it", "Lietuvių":"lt",
-                          "Magyar":"hu", "Nederlands":"nl", "日本語":"ja", 
+                          "Magyar":"hu", "Nederlands":"nl", "日本語":"ja",
                           "Norsk (bokmål)‬":"no", "Norsk (nynorsk)‬":"nn",
                           "Polski":"pl", "Português":"pt", "Română":"ro", "Русский":"ru",
                           "Slovenčina":"sk", "Slovenščina":"sl", "Српски / Srpski":"sr",

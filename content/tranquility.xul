@@ -6,29 +6,29 @@
   <script src="tranquility.js" />
 
   <keyset>
-    <key id="tranquility-single-key" keycode="VK_PAUSE" 
+    <key id="tranquility-single-key" keycode="VK_PAUSE"
          oncommand="Tranquility.onToolBarOrKeyboard(gBrowser.getBrowserForTab(gBrowser.selectedTab), 'VK_PAUSE');"/>
-    <key id="tranquility-key" modifiers="accel alt" key="T" 
+    <key id="tranquility-key" modifiers="accel alt" key="T"
          oncommand="Tranquility.onToolBarOrKeyboard(gBrowser.getBrowserForTab(gBrowser.selectedTab), null);"/>
-    <key id="tranquility-dictionary-key" modifiers="accel alt" key="D" 
+    <key id="tranquility-dictionary-key" modifiers="accel alt" key="D"
          oncommand="Tranquility.onSelectionRightClickContextMenu(gBrowser.getBrowserForTab(gBrowser.selectedTab), 'keyboard', 'dictionary');"/>
-    <key id="tranquility-wikipedia-key" modifiers="accel alt" key="W" 
+    <key id="tranquility-wikipedia-key" modifiers="accel alt" key="W"
          oncommand="Tranquility.onSelectionRightClickContextMenu(gBrowser.getBrowserForTab(gBrowser.selectedTab), 'keyboard', 'wikipedia');"/>
-    <key id="tranquility-toggle-display-menu-key" keycode="VK_ESCAPE" 
+    <key id="tranquility-toggle-display-menu-key" keycode="VK_ESCAPE"
          oncommand="Tranquility.toggleMenuDisplay(gBrowser.getBrowserForTab(gBrowser.selectedTab));"/>
   </keyset>
 
   <toolbarpallete id="BrowserToolbarPalette">
-    <toolbarbutton id="tranquility-toolbar-button" type="menu-button" class="toolbarbutton-1" label="&tranquility;" 
-                   tooltiptext="&tranquility;"  
+    <toolbarbutton id="tranquility-toolbar-button" type="menu-button" class="toolbarbutton-1" label="&tranquility;"
+                   tooltiptext="&tranquility;"
                    oncommand="Tranquility.onToolBarOrKeyboard(gBrowser.getBrowserForTab(gBrowser.selectedTab), null);">
       <menupopup>
-        <menuitem id="tranquility-toolbar-button-prefs" label="&tranquility_prefs;" class="menuitem-iconic"  
+        <menuitem id="tranquility-toolbar-button-prefs" label="&tranquility_prefs;" class="menuitem-iconic"
                   oncommand="event.stopPropagation(); Tranquility.openPreferences();" />
-        <menuitem id="tranquility-read-later" label="&tranquility_readlater;" class="menuitem-iconic"  
+        <menuitem id="tranquility-read-later" label="&tranquility_readlater;" class="menuitem-iconic"
                   accesskey="&tranquility.toolbarmenu.readlaterkey;"
                   oncommand="event.stopPropagation(); Tranquility.readLater(gBrowser.getBrowserForTab(gBrowser.selectedTab));" />
-        <menuitem id="tranquility-view-offline-files" label="&tranquility_view_offline_files;" class="menuitem-iconic"  
+        <menuitem id="tranquility-view-offline-files" label="&tranquility_view_offline_files;" class="menuitem-iconic"
                   accesskey="&tranquility.toolbarmenu.viewofflinefileskey;"
                   oncommand="event.stopPropagation(); Tranquility.displayOfflineFiles();" />
       </menupopup>
@@ -36,10 +36,10 @@
   </toolbarpallete>
 
   <menupopup id="contentAreaContextMenu">
-    <menuitem id="tranquility-link-rightclick-context" label="&tranquility;" class="menuitem-iconic" 
+    <menuitem id="tranquility-link-rightclick-context" label="&tranquility;" class="menuitem-iconic"
               oncommand="Tranquility.onLinkRightClickContextMenu(gContextMenu.linkURL);"
               insertbefore="context-viewsource"/>
-    <menuitem id="tranquility-selection-rightclick-context-wikipedia" label="&tranquility.wikipedia;" class="menuitem-iconic" 
+    <menuitem id="tranquility-selection-rightclick-context-wikipedia" label="&tranquility.wikipedia;" class="menuitem-iconic"
               oncommand="Tranquility.onSelectionRightClickContextMenu(gBrowser.getBrowserForTab(gBrowser.selectedTab), 'context-menu', 'wikipedia');"
               insertbefore="context-viewsource"/>
     <menuitem id="tranquility-selection-rightclick-context-dictionary" label="&tranquility.dictionary;"
@@ -53,4 +53,4 @@
      <stringbundle id="tranquility-string-bundle" src="chrome://tranquility/locale/tranquility.properties"/>
   </stringbundleset>
 
-</overlay> 
+</overlay>

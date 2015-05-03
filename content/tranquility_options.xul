@@ -2,7 +2,7 @@
 <?xml-stylesheet href="chrome://global/skin/global.css"  type="text/css"?>
 <!DOCTYPE window SYSTEM "chrome://tranquility/locale/tranquility.dtd">
 
-<prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+<prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         id="tranquility-prefs-window"
         title="&title.label;">
 
@@ -61,18 +61,18 @@
                   name="extensions.tranquility.pruningStrategy"
                   type="string"/>
     </preferences>
- 
+
     <groupbox>
       <caption label="&tranquility.background.colors.label;" />
       <vbox>
-        <checkbox id="tranquility-image-checkbox" 
-                  preference="tranquility-background-image-pref" 
+        <checkbox id="tranquility-image-checkbox"
+                  preference="tranquility-background-image-pref"
                   label="&backgroundimg.label;"/>
-        <checkbox id="tranquility-use-default-background-color-checkbox" 
-                  preference="tranquility-use-default-background-color-pref" 
+        <checkbox id="tranquility-use-default-background-color-checkbox"
+                  preference="tranquility-use-default-background-color-pref"
                   label="&tranquility.defaultBackgroundColor.label;"/>
-        <checkbox id="tranquility-use-default-font-color-checkbox" 
-                  preference="tranquility-use-default-font-color-pref" 
+        <checkbox id="tranquility-use-default-font-color-checkbox"
+                  preference="tranquility-use-default-font-color-pref"
                   label="&tranquility.defaultFontColor.label;"/>
         <grid>
           <columns>
@@ -82,22 +82,22 @@
           <rows>
             <row align="center">
               <label value="&tranquility.backgroundColor.label;" />
-              <colorpicker type="button" id="tranquility-background-color-button" 
+              <colorpicker type="button" id="tranquility-background-color-button"
                        preference="tranquility-background-color-pref" flex="1" />
             </row>
             <row align="center">
               <label value="&tranquility.fontColor.label;" />
-              <colorpicker type="button" id="tranquility-font-color-button" 
+              <colorpicker type="button" id="tranquility-font-color-button"
                        preference="tranquility-font-color-pref" flex="1" />
             </row>
             <row align="center">
               <label value="&tranquility.linkColor.label;" />
-              <colorpicker type="button" id="tranquility-link-color-button" 
+              <colorpicker type="button" id="tranquility-link-color-button"
                        preference="tranquility-link-color-pref" flex="1" />
             </row>
             <row align="center">
               <label value="&tranquility.annotationHighlightColor.label;" />
-              <colorpicker type="button" id="tranquility-annotation-highlight-color-button" 
+              <colorpicker type="button" id="tranquility-annotation-highlight-color-button"
                        preference="tranquility-annotation-highlight-color-pref" flex="1" />
             </row>
           </rows>
@@ -136,11 +136,11 @@
     <groupbox>
       <caption label="&tranquility.extras.label;" />
       <vbox>
-        <checkbox id="tranquility-tranquilbrowsingmode-checkbox" 
-                  preference="tranquility-tranquilbrowsingmode-pref" 
+        <checkbox id="tranquility-tranquilbrowsingmode-checkbox"
+                  preference="tranquility-tranquilbrowsingmode-pref"
                   label="&tranquility.tranquilBrowsingMode.label;"/>
-        <checkbox id="tranquility-enablesinglekeymode-checkbox" 
-                  preference="tranquility-enablesinglekeymode-pref" 
+        <checkbox id="tranquility-enablesinglekeymode-checkbox"
+                  preference="tranquility-enablesinglekeymode-pref"
                   label="&tranquility.enableSingleKeyMode.label;"/>
         <grid>
           <columns>
@@ -150,17 +150,17 @@
           <rows>
             <row align="center">
               <label value="&tranquility.defaultwidth.label;" />
-              <textbox type="number" id="tranquility-default-width-textbox" 
+              <textbox type="number" id="tranquility-default-width-textbox"
                        preference="tranquility-default-width-pref" min="1" max="90" flex="1" />
             </row>
             <row align="center">
               <label value="&tranquility.defaultlineheight.label;" />
-              <textbox type="number" id="tranquility-default-lineheight-textbox" 
+              <textbox type="number" id="tranquility-default-lineheight-textbox"
                        preference="tranquility-default-lineheight-pref" min="100" max="200" increment="10" flex="1" />
             </row>
             <row align="center">
               <label value="&tranquility.defaultalign.label;" />
-              <menulist id="tranquility-default-align-menulist" preference="tranquility-default-align-pref"> 
+              <menulist id="tranquility-default-align-menulist" preference="tranquility-default-align-pref">
                  <menupopup id="tranquility-default-align-menupopup">
                    <menuitem label="&tranquility.alignLeft.label;" value="left" />
                    <menuitem label="&tranquility.alignJustify.label;" value="justify" />
@@ -191,7 +191,7 @@
     </groupbox>
 
   </prefpane>
- 
+
   <script language="javascript" src="resource://tranquility/tranquility_options_xul.js"/>
 
 </prefwindow>

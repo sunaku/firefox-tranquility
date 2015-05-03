@@ -1,4 +1,4 @@
-content tranquility content/ 
+content tranquility content/
 overlay chrome://browser/content/browser.xul chrome://tranquility/content/tranquility.xul
 
 locale tranquility en-US locale/en-US/

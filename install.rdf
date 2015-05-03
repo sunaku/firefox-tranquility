@@ -3,7 +3,7 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-   
+
     <em:id>tranquility@ushnisha.com</em:id>
     <em:name>Tranquility</em:name>
     <em:version>1.1.8</em:version>
@@ -11,9 +11,9 @@
     <em:description>Makes a Web Page readable.</em:description>
     <em:creator>Arun Kunchithapatham</em:creator>
     <!-- optional items -->
-    <em:optionsURL>chrome://tranquility/content/tranquility_options.xul</em:optionsURL> 
+    <em:optionsURL>chrome://tranquility/content/tranquility_options.xul</em:optionsURL>
     <em:homepageURL>http://tranquility.ushnisha.com/</em:homepageURL>
-    
+
     <!-- Firefox -->
     <em:targetApplication>
       <Description>

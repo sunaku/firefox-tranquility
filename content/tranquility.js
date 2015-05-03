@@ -49,24 +49,24 @@ var Tranquility = {
     gNavLinks: [],
     gDOMLoaded: [],
     prefs: null,
-  
+
     onLoad: function() {
-    
+
         // initialization code
         Components.utils.import("resource://gre/modules/PopupNotifications.jsm");
-   
+
         var menu = document.getElementById("contentAreaContextMenu");
         menu.addEventListener("popupshowing", Tranquility.onRightClick, false);
 
-        // Add Progress listener for Tranquility; Implements only onLocationChange 
+        // Add Progress listener for Tranquility; Implements only onLocationChange
         // Add TabClose eventListener
         // Both of the above will be used to clear the cached documents
         // when the pages referring to them are closed
         gBrowser.addTabsProgressListener(Tranquility_ProgressListener);
         gBrowser.tabContainer.addEventListener("TabClose", Tranquility.onTabClose, false);
-        
+
         // first run code
-        // As per AMO review suggestion, using Services.prefs since 
+        // As per AMO review suggestion, using Services.prefs since
         // Components.utils.import("resource://gre/modules/Services.jsm")
         // is imported by default
         // Moved from nsIPrefBranch2 to nsIPrefBranch in 1.1.13 as per compatibility report
@@ -90,24 +90,24 @@ var Tranquility = {
                 document.persist(navbar.id, "currentset");
             }
         }
-      
+
         // Enable or disable the single/key mode based on the option value
         if(this.prefs.getBoolPref("enableSingleKeyMode"))
            document.getElementById("tranquility-single-key").setAttribute('disabled', 'false');
-        else 
+        else
            document.getElementById("tranquility-single-key").setAttribute('disabled', 'true');
 
         this.initialized = true;
     },
-    
+
     // Code added to cleanly support Private Browsing Mode
-    // When Private Browsing is enabled, do not support "Read Later" or 
+    // When Private Browsing is enabled, do not support "Read Later" or
     // "Load Offline Links" pages which are stored in an IndexedDB database
     inPrivateBrowsingMode: function() {
         try {
             // Firefox 20+
             Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
-            return PrivateBrowsingUtils.isWindowPrivate(window); 
+            return PrivateBrowsingUtils.isWindowPrivate(window);
         } catch(e) {
             // pre Firefox 20
             try {
@@ -140,7 +140,7 @@ var Tranquility = {
                                                     }
                                                 );
 
-        var linkRightClickListener = function(e) { 
+        var linkRightClickListener = function(e) {
             if((e.originalTarget.nodeName == '#document') &&
                (e.originalTarget.defaultView.location.href == newTabBrowser1.currentURI.spec)) {
                 Tranquility.gDOMLoaded[newTabBrowser1.currentURI.spec] = true;
@@ -149,7 +149,7 @@ var Tranquility = {
                 lnotification.remove();
             }
         };
- 
+
         newTabBrowser1.addEventListener("DOMContentLoaded", linkRightClickListener, true);
     },
 
@@ -166,13 +166,13 @@ var Tranquility = {
             selText = encodeURIComponent(selText);     // encode the selection string before constructing the query
 
             var langPref = Tranquility.prefs.getCharPref('wikiLanguage');
-            var url; 
+            var url;
             if(dictName == "dictionary")
                 url = "http://" + langPref + ".wiktionary.org/wiki/" + selText;
             if(dictName == "wikipedia")
                 url = "http://" + langPref + ".wikipedia.org/wiki/" + selText;
 
-            Tranquility.createDictionaryElements(contentDoc); 
+            Tranquility.createDictionaryElements(contentDoc);
 
             var target = contentDoc.getElementById('tranquility_dictionary');
             var masker = contentDoc.getElementById('tranquility_masker');
@@ -220,7 +220,7 @@ var Tranquility = {
                 newTabBrowser.reload();
                 return;
             }
-        } 
+        }
         else if(Tranquility.gTranquilDoc[thisURL] != undefined) {
             try {
                 var tdoc = Tranquility.gTranquilDoc[thisURL].cloneNode(true);
@@ -238,7 +238,7 @@ var Tranquility = {
         }
 
         // If direct call vs. from right click or tranquil browsing mode, initialize variable
-        if(Tranquility.gDOMLoaded[thisURL] == undefined) 
+        if(Tranquility.gDOMLoaded[thisURL] == undefined)
             Tranquility.gDOMLoaded[thisURL] = false;
 
         // Processing before complete load results in unpredictable results
@@ -247,7 +247,7 @@ var Tranquility = {
         // Ideally we want to process the web page only when loading is complete
         // However, many webpages load a lot of junk; so for now, we will not wait
         // for contentDoc.readyState == "complete"; but process even if we reach
-        // contentDoc.readyState == "interactive"; 
+        // contentDoc.readyState == "interactive";
         // this also improves the user experience (reduced wait times)
         var strBundle = document.getElementById("tranquility-string-bundle");
         var notifyString = strBundle.getString('waitingForLoadNotification');
@@ -270,7 +270,7 @@ var Tranquility = {
         }
         // else, wait for DOMContentLoaded and then process
         else {
-            var domLoadedListener = function(e) { 
+            var domLoadedListener = function(e) {
                 if((e.originalTarget.nodeName == '#document') &&
                    (e.originalTarget.defaultView.location.href == thisURL)) {
                     // Backup the original innerHTML of the page
@@ -289,7 +289,7 @@ var Tranquility = {
 
         var thisURL = newTabBrowser.currentURI.spec;
         var contentDoc = newTabBrowser.contentDocument;
-     
+
         // Backup the original innerHTML of the page
         // Required in case the XMLHTTPRequest for print/single-page view fails
         newTabBrowser.stop();
@@ -298,7 +298,7 @@ var Tranquility = {
         }
 
         // Check to see if there are "Print/Single Page" views we can use as a starting point
-        // Only the first page is modified for multi-page doc. that does not have above links 
+        // Only the first page is modified for multi-page doc. that does not have above links
         var found = Tranquility.checkAlternateLink(newTabBrowser);
 
         // If no print/single-page view is found, then process the regular document
@@ -312,13 +312,13 @@ var Tranquility = {
         var thisURL = newTabBrowser.currentURI.spec;
         var contentDoc = newTabBrowser.contentDocument;
         var continueProcessing = true;
-        
+
         // Remove unnecessary whitespaces and comments
         Tranquility.removeWhiteSpaceComments(contentDoc);
- 
+
         // Cleanup the head and unnecessary tags
-        var delTags = ["STYLE", "LINK", "META", "SCRIPT", "NOSCRIPT", "IFRAME", 
-                       "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER"]; 
+        var delTags = ["STYLE", "LINK", "META", "SCRIPT", "NOSCRIPT", "IFRAME",
+                       "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER"];
         for(var i=0; i<delTags.length; i++) {
             Tranquility.removeTag(contentDoc, delTags[i]);
         }
@@ -333,18 +333,18 @@ var Tranquility = {
         for(var i=0; i < hiddenTags.length; i++) {
             Tranquility.deleteHiddenElements(contentDoc, hiddenTags[i]);
         }
-        
+
         // Processing for ads related DIV's; several websites seem to use LI elements
-        // within the ads DIV's, or for navigation links which are not required in the 
-        // Tranquility view.  In this section, we try to delete DIV's that have at least 
+        // within the ads DIV's, or for navigation links which are not required in the
+        // Tranquility view.  In this section, we try to delete DIV's that have at least
         // x% of the DIV content within LI tags
         var pruneAdsTagList = ["UL", "DIV", "ARTICLE", "SECTION"];
         var totalSize = Tranquility.computeSize(contentDoc.documentElement);
         for(var p=0; p < pruneAdsTagList.length; p++) {
             Tranquility.pruneAdsTag(contentDoc, thisURL, pruneAdsTagList[p], 0.7, totalSize);
         }
-    
-        // Cleanup select tags that have content length smaller than minSize 
+
+        // Cleanup select tags that have content length smaller than minSize
         // This helps clean up a number of junk DIV's before we get to real content
         // Can be made a parameter in later versions
         // First run with minSize ZERO
@@ -354,7 +354,7 @@ var Tranquility = {
         totalSize = Tranquility.computeSize(contentDoc.documentElement);
         for(var p=0; p < pruneTagList.length; p++) {
             Tranquility.pruneTag(contentDoc, pruneTagList[p], 0.0, minSize, totalSize);
-        } 
+        }
         // Next run with minsize 200 (for a reduced subset of the tags)
         // Removed TD, TABLE, and DD for now
         pruneTagList = ["FORM", "DIV", "ARTICLE", "SECTION"];
@@ -362,8 +362,8 @@ var Tranquility = {
         totalSize = Tranquility.computeSize(contentDoc.documentElement);
         for(var p=0; p < pruneTagList.length; p++) {
             Tranquility.pruneTag(contentDoc, pruneTagList[p], 0.0, minSize, totalSize);
-        } 
-  
+        }
+
         // Second pass
         // Remove any elements that have zero length textContent
         pruneTagList = ["LI", "DIV", "OL", "UL", "FORM", "TABLE", "ARTICLE", "SECTION", "SPAN", "P"];
@@ -371,10 +371,10 @@ var Tranquility = {
         totalSize = Tranquility.computeSize(contentDoc.documentElement);
         for(var p=0; p < pruneTagList.length; p++) {
             Tranquility.pruneTag(contentDoc, pruneTagList[p], 0.0, minSize, totalSize);
-        } 
-        
-        if(Tranquility.prefs.getCharPref('pruningStrategy') == "Aggressive") { 
-            // Heuristic to try and handle blog style pages 
+        }
+
+        if(Tranquility.prefs.getCharPref('pruningStrategy') == "Aggressive") {
+            // Heuristic to try and handle blog style pages
             // where no div has a substantial % of content
             // try only div's to start out
             var max_pctg = 0;
@@ -392,8 +392,8 @@ var Tranquility = {
                     elem_count++;
                     if(pctg > max_pctg) { max_pctg = pctg; }
                 }
-            } 
-      
+            }
+
             elem_count == 0 ? avg_pctg = 0.1 : avg_pctg /= elem_count;
             // Cleanup the div tags; loop for better cleanup
             for(var p=0; p < pruneTagList.length; p++) {
@@ -402,9 +402,9 @@ var Tranquility = {
                     totalSize = Tranquility.computeSize(contentDoc.documentElement);
                     Tranquility.pruneTag(contentDoc, pruneTagList[p], incPctg, minSize, totalSize);
                 }
-            } 
+            }
         }
-      
+
         // Try to remove unnecessary nested DIV's
         // They mess up the padding and margins; use only in moderate pruning
         // They mess up the padding and margins; use only in moderate pruning
@@ -421,7 +421,7 @@ var Tranquility = {
 
         // At his time, most of the cleanup has happened; check the size of the document
         // If it is below a certain absolute threshold, then maybe Tranquility did not
-        // work as well, or the web page is not a suitable candidate.  Revert to the original 
+        // work as well, or the web page is not a suitable candidate.  Revert to the original
         // document in this case.
         var finalSize = Tranquility.computeSize(contentDoc.documentElement);
         if(finalSize < 1000) {
@@ -445,7 +445,7 @@ var Tranquility = {
                                                             label: "Process Anyway!",
                                                             accessKey: "C",
                                                             callback: function() {
-                                                                continueProcessing = true;                               
+                                                                continueProcessing = true;
                                                             }
                                                         },
                                                         null, /* secondary actions */
@@ -455,8 +455,8 @@ var Tranquility = {
                                                         }
                                                     );
 
-            setTimeout(function () { 
-                fnotification.remove(); 
+            setTimeout(function () {
+                fnotification.remove();
                 if(!continueProcessing) {
                     var odoc = Tranquility.gOrigDoc[thisURL].cloneNode(true);
                     contentDoc.replaceChild(odoc.documentElement, contentDoc.documentElement );
@@ -469,7 +469,7 @@ var Tranquility = {
                 }
             }, 5000);
         }
-          
+
 
         // Format the tags in a nice readable font/style using custom css loaded in header
         var reformatTagList = ["UL", "OL", "LI", "DIV", "SPAN", "P", "FONT", "BODY", "H1",
@@ -507,19 +507,19 @@ var Tranquility = {
         contentDoc.body.addEventListener("click", Tranquility.handleClickEvent, false);
 
         // Move the other divs into cdiv
-        // Code modified from version 1.1.12 to take care of a corner case where the 
+        // Code modified from version 1.1.12 to take care of a corner case where the
         // tranquility version had all <p> elements in reverse order
         var bchildren = contentDoc.body.childNodes;
         for(var i=0; i<bchildren.length; i++) {
-            if((bchildren[i].id !== 'tranquility_container') && 
+            if((bchildren[i].id !== 'tranquility_container') &&
                (bchildren[i].id !== 'tranquility_innercontainer')) {
                 cdiv_inner.appendChild(bchildren[i]);
                 // decrement count since we have moved element i from the body to cdiv_inner
                 // otherwise, we will only add alternate elements
-                i--; 
+                i--;
             }
         }
-                
+
         // Add the navigation links div into the tranquility_innercontainer
         // Do this only if we are processing a NON-PRINT mode; otherwise, we
         // very likely have the entire document already loaded
@@ -534,7 +534,7 @@ var Tranquility = {
         }
 
         var strBundle = document.getElementById("tranquility-string-bundle");
-        
+
         // Provide "more links" functionality
         //
         var links_button_div = contentDoc.createElement('div');
@@ -581,7 +581,7 @@ var Tranquility = {
         offline_links_div.setAttribute('id', 'tranquility_offline_links');
         offline_links_div.style.visibility = 'hidden';
         contentDoc.body.appendChild(offline_links_div);
-      
+
         // Provide "View Notes" functionality
         //
         var viewnotes_button_div = contentDoc.createElement('div');
@@ -595,21 +595,21 @@ var Tranquility = {
         setTimeout(function() {
             Tranquility.hideMenuDiv(contentDoc);
         }, 1000);
-        
+
         // Apply background image preference
         if(this.prefs.getBoolPref("useBackgroundImage")) {
             contentDoc.body.setAttribute('class', 'tranquility');
         }
         else {
             contentDoc.body.setAttribute('class', 'tranquility-no-image');
-        }  
+        }
 
         //Apply backgroundColor preference
         var elems = contentDoc.documentElement.getElementsByTagName("*");
         for(var i=0; i < elems.length; i++) {
-            if((elems[i].getAttribute('class')) && 
-               (elems[i].getAttribute('class') != 'tranquility_links') && 
-               (elems[i].getAttribute('class') != 'tranquility_masker') && 
+            if((elems[i].getAttribute('class')) &&
+               (elems[i].getAttribute('class') != 'tranquility_links') &&
+               (elems[i].getAttribute('class') != 'tranquility_masker') &&
                (elems[i].getAttribute('class').substr(0,11) === 'tranquility')) {
                 if(this.prefs.getBoolPref("useDefaultBackgroundColor")) {
                     elems[i].style.backgroundColor = "#FDFDFD";
@@ -618,14 +618,14 @@ var Tranquility = {
                     elems[i].style.backgroundColor = this.prefs.getCharPref("backgroundColor");
                 }
             }
-        }   
-      
+        }
+
         Tranquility.applyFontPreferences(contentDoc);
-        
+
         // Apply fontColor preference
         var elems = contentDoc.documentElement.getElementsByTagName("*");
         for(var i=0; i < elems.length; i++) {
-            if((elems[i].getAttribute('class')) && 
+            if((elems[i].getAttribute('class')) &&
                (elems[i].getAttribute('class').substr(0,11) === 'tranquility')) {
                 if(this.prefs.getBoolPref("useDefaultFontColor")) {
                     elems[i].style.color = "#000000";
@@ -634,7 +634,7 @@ var Tranquility = {
                     elems[i].style.color = this.prefs.getCharPref("fontColor");
                 }
             }
-        }   
+        }
 
         // Apply linkColor preference
         var elems = contentDoc.documentElement.getElementsByTagName("a");
@@ -645,18 +645,18 @@ var Tranquility = {
             else {
                 elems[i].style.color = this.prefs.getCharPref("linkColor");
             }
-        }   
+        }
 
         // Update the width based on the preference setting
         // Do this for the images also
-        cdiv.style.width = this.prefs.getIntPref("defaultWidthPctg") + "%"; 
-        menu_div.style.width = this.prefs.getIntPref("defaultWidthPctg") + "%"; 
+        cdiv.style.width = this.prefs.getIntPref("defaultWidthPctg") + "%";
+        menu_div.style.width = this.prefs.getIntPref("defaultWidthPctg") + "%";
         Tranquility.resizeImages(contentDoc);
 
         // Apply text justification
         var elems = contentDoc.documentElement.getElementsByTagName("*");
         for(var i=0; i < elems.length; i++) {
-            if((elems[i].getAttribute('class')) && 
+            if((elems[i].getAttribute('class')) &&
                (elems[i].getAttribute('class').substr(0,11) === 'tranquility') &&
                (elems[i].getAttribute('class') !== 'tranquility_links') &&
                (elems[i].getAttribute('class') !== 'tranquility_nav_links') &&
@@ -666,17 +666,17 @@ var Tranquility = {
                (elems[i].getAttribute('class') !== 'tranquility_read_later_btn')) {
                 elems[i].style.textAlign = this.prefs.getCharPref("defaultAlign");
             }
-        }   
+        }
 
         // Apply line height preferences
         var elems = contentDoc.documentElement.getElementsByTagName("*");
         for(var i=0; i < elems.length; i++) {
-            if((elems[i].getAttribute('class')) && 
+            if((elems[i].getAttribute('class')) &&
                (elems[i].getAttribute('class').substr(0,11) === 'tranquility')) {
                 elems[i].style.lineHeight = this.prefs.getIntPref("defaultLineHeightPctg") + "%";
             }
-        }   
-      
+        }
+
         // Remove target attribute from all anchor elements when TranquilBrowsingMode is enabled
         // this will enable opening the link in the same browser tab
         //
@@ -696,9 +696,9 @@ var Tranquility = {
     },
 
     checkAlternateLink: function(newTabBrowser) {
-    
+
         var contentDoc = newTabBrowser.contentDocument;
- 
+
         // Search for 'Single Page' links and load them in current window
         // Helps in simplifying the processing as well as in handling multi-page document
 
@@ -706,14 +706,14 @@ var Tranquility = {
         var altString = strBundle.getString('singlePageString').split(",");
         var navString = strBundle.getString('navigationString').split(",");
         var navRegExp = /^\d+$/;
-        
+
         var altURL;
         var altLink;
         var found = 0;
 
         var altlinks = contentDoc.getElementsByTagName('A');
- 
-        // Insert all links into a temporary div for later use 
+
+        // Insert all links into a temporary div for later use
         var links_div = contentDoc.createElement('div');
         links_div.setAttribute('class', 'tranquility_links');
         links_div.setAttribute('id', 'tranquility_links');
@@ -734,16 +734,16 @@ var Tranquility = {
             }
             // Collect any link that might be used for navigation in a multipage document
             var navstr = altLinkClone.textContent.replace(/\s/g, '');
-            if(navstr && ((navString.indexOf(navstr.toUpperCase()) >= 0) || 
+            if(navstr && ((navString.indexOf(navstr.toUpperCase()) >= 0) ||
                           (navstr.search(navRegExp) != -1)) &&
-              (!altLinkClone.getAttribute('onclick')) && 
+              (!altLinkClone.getAttribute('onclick')) &&
               (altLinkClone.href) &&
               (altLinkClone.href != "#") &&
               (altLinkClone.href != (newTabBrowser.currentURI.spec + "#")) &&
               (altLinkClone.href.substr(0,10) !== "javascript")) {
                 nav_links_div.appendChild(altLinkClone.cloneNode(true));
                 nav_links_div.appendChild(sp_elem.cloneNode(true));
-            } 
+            }
         }
         Tranquility.gOrigLinks[newTabBrowser.currentURI.spec] = links_div.cloneNode(true);
         Tranquility.gNavLinks[newTabBrowser.currentURI.spec] = nav_links_div.cloneNode(true);
@@ -756,8 +756,8 @@ var Tranquility = {
             for(var i=0; i < altlinks.length; i++) {
                 var str = altlinks[i].textContent.replace(/\s/g, '');
                 // Link exists; matches the possible values; is not javascript based (rather a direct href)
-                if(str && ((str.toUpperCase() === altString[j]))  && 
-                           (!altlinks[i].getAttribute('onclick')) && 
+                if(str && ((str.toUpperCase() === altString[j]))  &&
+                           (!altlinks[i].getAttribute('onclick')) &&
                            (altlinks[i].href) &&
                            (altlinks[i].href != "#") &&
                            (altlinks[i].href.substr(0,10) !== "javascript")) {
@@ -784,8 +784,8 @@ var Tranquility = {
         var fragment = Components.classes["@mozilla.org/parserutils;1"]
                 .getService(Components.interfaces.nsIParserUtils)
                 .parseFragment(cdoc, 0, false, null, target);
-            
-        target.appendChild(fragment);   
+
+        target.appendChild(fragment);
         var success = Tranquility.processDocument(newTabBrowser, 'PRINT');
         // If the print mode failed to find sufficient content, return false
         // Let Traquility try to process the original view
@@ -813,15 +813,15 @@ var Tranquility = {
             target.setAttribute('id', 'tranquility_dictionary');
             target.setAttribute('align', 'right');
             target.style.visibility = 'hidden';
-        
+
             // Create an event listener to capture mouse click on the iframe (to hide if required)
             target.addEventListener("click", Tranquility.handleClickEvent, false);
 
-            contentDoc.body.appendChild(target); 
+            contentDoc.body.appendChild(target);
         }
 
         // Update the width setting if it has changed
-        var dict_width = this.prefs.getIntPref("defaultWidthPctg"); 
+        var dict_width = this.prefs.getIntPref("defaultWidthPctg");
         var delta = (100 - dict_width)/2;
         var target_width = Math.round(dict_width + delta);
         target.style.width = target_width + "%";
@@ -873,7 +873,7 @@ var Tranquility = {
                 }
                 event.stopPropagation();
             }
-        } 
+        }
         // Process clicking on the "More Links" button
         else if(event.target.id == 'tranquility_more_links_btn') {
             var target = contentDoc.getElementById('tranquility_links');
@@ -894,22 +894,22 @@ var Tranquility = {
         }
         // Process clicking on the "View Notes" button
         else if(event.target.id == 'tranquility_viewnotes_btn') {
-            var view_notes_div = Tranquility.viewAnnotationNotes(contentDoc, 
+            var view_notes_div = Tranquility.viewAnnotationNotes(contentDoc,
                                                                 Tranquility.prefs.getIntPref("defaultWidthPctg"));
             var masker = contentDoc.getElementById('tranquility_masker');
-            
+
             view_notes_div.style.visibility = 'visible';
             masker.style.visibility = 'visible';
             event.stopPropagation();
-        } 
+        }
         // if clicked on an annotation, toggle the visibility of the annotation note
         else if(event.target.className == 'tranquility_annotation_selection') {
             var orig_note = event.target.nextSibling;
             var notep = orig_note.cloneNode(true);
-            // Set the user data flag on the original note; 
+            // Set the user data flag on the original note;
             //this is used to update a note that is edited.
             orig_note.setAttribute('data-active-note', 'true');
-            var note_div = Tranquility.createAnnotationNote(contentDoc, 
+            var note_div = Tranquility.createAnnotationNote(contentDoc,
                                                             notep,
                                                             Tranquility.prefs.getIntPref("defaultWidthPctg"),
                                                             event.pageY);
@@ -935,8 +935,8 @@ var Tranquility = {
         }
         // if clicked inside the iframe, then don't hide it; stop bubbling back to body
         else if(event.target.id == 'tranquility_dictionary')  {
-            Tranquility.hideLinksDiv(contentDoc);  
-            Tranquility.hideOffineLinksDiv(contentDoc);  
+            Tranquility.hideLinksDiv(contentDoc);
+            Tranquility.hideOffineLinksDiv(contentDoc);
             event.stopPropagation();
         }
         else if((urlStr != undefined) && (event.target.className == 'tranquility_offline_link')) {
@@ -961,7 +961,7 @@ var Tranquility = {
                 event.stopPropagation();
                 return;
             }
-          
+
             if(event.ctrlKey) { // Equivalent of right click Tranquility;so call that function and stop the event
                 event.preventDefault();
                 event.stopPropagation();
@@ -982,7 +982,7 @@ var Tranquility = {
                                                             }
                                                         );
 
-                var linkLeftClickListener = function(e) { 
+                var linkLeftClickListener = function(e) {
                     if((e.originalTarget.nodeName == "#document") &&
                        ((e.originalTarget.defaultView.location.href == url) ||
                         (e.originalTarget.defaultView.location.href == newTabBrowser.currentURI.spec))) {
@@ -999,11 +999,11 @@ var Tranquility = {
         else {
             if((contentDoc.getElementById('tranquility_links') != undefined) &&
                (contentDoc.getElementById('tranquility_links').style.visibility == 'visible')) {
-                Tranquility.hideLinksDiv(contentDoc);  
+                Tranquility.hideLinksDiv(contentDoc);
             }
             else if((contentDoc.getElementById('tranquility_offline_links') != undefined) &&
                     (contentDoc.getElementById('tranquility_offline_links').style.visibility == 'visible')) {
-                Tranquility.hideOfflineLinksDiv(contentDoc);  
+                Tranquility.hideOfflineLinksDiv(contentDoc);
             }
             else if(contentDoc.getElementById('tranquility_annotation_note') != undefined) {
                 // First, check to see if the note has been modified/edited
@@ -1012,12 +1012,12 @@ var Tranquility = {
                 var orig_note;
                 var orig_notes = contentDoc.getElementsByClassName('tranquility_annotation_text');
                 for(var i=0; i < orig_notes.length; i++) {
-                    if ((orig_notes[i].getAttribute('data-active-note') != undefined && 
+                    if ((orig_notes[i].getAttribute('data-active-note') != undefined &&
                          orig_notes[i].getAttribute('data-active-note') == "true")) {
                         orig_note = orig_notes[i];
                     }
                 }
-                
+
                 if(orig_note != undefined) {
                     orig_note.setAttribute('data-active-note', 'false');
                     if(orig_note.textContent != note.textContent) {
@@ -1029,25 +1029,25 @@ var Tranquility = {
                         orig_note.textContent = newText;
 
                         var masker = contentDoc.getElementById('tranquility_masker');
-                        masker.style.visibility = 'hidden';            
+                        masker.style.visibility = 'hidden';
                         note.parentNode.removeChild(note);
-                        
+
                         var btn = contentDoc.getElementById('tranquility_offline_links_btn');
                         var url =  btn.getAttribute('data-active-link');
                         Tranquility.gTranquilDoc[url] = contentDoc.cloneNode(true);
-                        Tranquility.saveContentOffline(url);                    
+                        Tranquility.saveContentOffline(url);
                     }
                 }
                 else {
                     // Next, delete the note view and hide the masker
                     var masker = contentDoc.getElementById('tranquility_masker');
-                    masker.style.visibility = 'hidden';            
+                    masker.style.visibility = 'hidden';
                     note.parentNode.removeChild(note);
                 }
             }
             else if(contentDoc.getElementById('tranquility_view_notes') != undefined) {
                 var masker = contentDoc.getElementById('tranquility_masker');
-                masker.style.visibility = 'hidden';            
+                masker.style.visibility = 'hidden';
                 var note = contentDoc.getElementById('tranquility_view_notes');
                 note.parentNode.removeChild(note);
             }
@@ -1055,33 +1055,33 @@ var Tranquility = {
                 Tranquility.hideDictionaryView(contentDoc);
         }
     },
-    
-    
+
+
     getAnchorNode: function (elem) {
-    
+
         var urlString = elem.href;
- 
+
         while((urlString == undefined) && (elem.parentNode != undefined)) {
-            elem = elem.parentNode;     
+            elem = elem.parentNode;
             urlString = elem.href;
             if(urlString != undefined)
                 return urlString;
         }
         return urlString;
     },
-  
+
     hideLinksDiv: function(cdoc) {
 
         var target = cdoc.getElementById('tranquility_links');
         var masker = cdoc.getElementById('tranquility_masker');
         var dictfr = cdoc.getElementById('tranquility_dictionary');
-        if(target != undefined) { 
+        if(target != undefined) {
             target.style.visibility = 'hidden';
             if((dictfr != undefined) && (dictfr.style.visibility == 'visible')) {
                 // iframe is visible; so do not hide the masker
                 // do nothing
             }
-            else { 
+            else {
                 // Either iframe is not defined or it is hidden; so hide masker
                 masker.style.visibility = 'hidden';
             }
@@ -1093,13 +1093,13 @@ var Tranquility = {
         var target = cdoc.getElementById('tranquility_offline_links');
         var masker = cdoc.getElementById('tranquility_masker');
         var dictfr = cdoc.getElementById('tranquility_dictionary');
-        if(target != undefined) { 
+        if(target != undefined) {
             target.style.visibility = 'hidden';
             if((dictfr != undefined) && (dictfr.style.visibility == 'visible')) {
                 // iframe is visible; so do not hide the masker
                 // do nothing
             }
-            else { 
+            else {
                 // Either iframe is not defined or it is hidden; so hide masker
                 masker.style.visibility = 'hidden';
             }
@@ -1116,7 +1116,7 @@ var Tranquility = {
         }
     },
 
-    
+
     toggleMenuDisplay: function(newTabBrowser) {
 
         var cdoc = newTabBrowser.contentDocument;
@@ -1128,8 +1128,8 @@ var Tranquility = {
             Tranquility.hideMenuDiv(cdoc);
         }
     },
-    
-    
+
+
     showMenuDiv: function(cdoc) {
         var menu_div = cdoc.getElementById('tranquility_menu');
         menu_div.style.height = '50px';
@@ -1139,7 +1139,7 @@ var Tranquility = {
             menu_items[i].style.visibility = 'visible';
         };
 
-        // Delete the expand menu button and trigger a hide of the menu 
+        // Delete the expand menu button and trigger a hide of the menu
         // within 10 seconds
         var expand_menu_btn = cdoc.getElementById('tranquility_expand_menu_btn');
         expand_menu_btn.parentNode.removeChild(expand_menu_btn);
@@ -1148,13 +1148,13 @@ var Tranquility = {
         }, 10000);
 
     },
-    
-    
+
+
     hideMenuDiv: function(cdoc) {
 
         // This is the setTimeout function for hiding menu after loading a page
         // either from the database or during the first tranquility conversion
-        
+
         var menu_div = cdoc.getElementById('tranquility_menu');
         // Hide all the menu items and reduce its height
         var menu_items = menu_div.childNodes;
@@ -1173,8 +1173,8 @@ var Tranquility = {
         cdoc.body.appendChild(expand_menu_btn);
         expand_menu_btn.addEventListener("click", Tranquility.handleClickEvent, false);
     },
-    
-    
+
+
     toggleDictionaryView: function(cdoc) {
 
         var target = cdoc.getElementById('tranquility_dictionary');
@@ -1192,7 +1192,7 @@ var Tranquility = {
         }
     },
 
-  
+
     processXMLHTTPRequest: function(tBrowser, url, callback) {
 
         var oXHR = new XMLHttpRequest();
@@ -1200,9 +1200,9 @@ var Tranquility = {
             if(oXHR.readyState === 4) {
                 if(oXHR.status === 200) {
                     var cdoc = oXHR.responseText;
-                    callback(tBrowser, cdoc); 
+                    callback(tBrowser, cdoc);
                 }
-            }        
+            }
         };
 
         oXHR.open("GET", url, true);
@@ -1230,7 +1230,7 @@ var Tranquility = {
     },
 
     reformatHeader: function(cdoc) {
-   
+
         var hlink = cdoc.createElement('link');
         hlink.setAttribute('href', 'resource://tranquility/tranquility.css');
         hlink.setAttribute('rel',  'stylesheet');
@@ -1269,14 +1269,14 @@ var Tranquility = {
         // Remove elements that have display==none or visibility==hidden
         var elems = cdoc.getElementsByTagName(tagString);
         for(var i=elems.length - 1; i >=0;  i--)  {
-            if(((elems[i].style.visibility != undefined) && 
+            if(((elems[i].style.visibility != undefined) &&
                 (elems[i].style.visibility == 'hidden')) ||
-               ((elems[i].style.display != undefined) && 
-                (elems[i].style.display == 'none')))                                
+               ((elems[i].style.display != undefined) &&
+                (elems[i].style.display == 'none')))
                 elems[i].parentNode.removeChild(elems[i]);
         }
     },
-    
+
 
     pruneAdsTag: function(cdoc, url, tagString, thresholdPctg, totalSize) {
 
@@ -1289,11 +1289,11 @@ var Tranquility = {
             // If the DIV has a H1 child, then we want to retain the article
             // heading and not delete it.
             var h1elems = tElem.getElementsByTagName("H1");
-            if(h1elems.count > 0) 
+            if(h1elems.count > 0)
                 continue;
 
             var cLength = Tranquility.computeSize(tElem);
-            var pctg = cLength/totalSize; 
+            var pctg = cLength/totalSize;
             // If the DIV/SECTION/ARTICLE is empty remove it right away
             if(cLength == 0) {
                 tElem.parentNode.removeChild(tElem);
@@ -1304,11 +1304,11 @@ var Tranquility = {
             // navigation menu (or ads links menu) has a list of LI nodes that contain
             // anchor nodes with links to a new web page/section
             //
-            else if(pctg < 0.8) { 
+            else if(pctg < 0.8) {
                 var anchorNodes = tElem.getElementsByTagName("A");
                 var anchorLength = 0;
                 var num_words = 0;
-                for(var j=0; j < anchorNodes.length; j++) { 
+                for(var j=0; j < anchorNodes.length; j++) {
                     // Ignore links that are # tags in the same document
                     // These are typically table of content type links for the
                     // current document and are useful to retain
@@ -1319,12 +1319,12 @@ var Tranquility = {
                     num_words += anchorNodes[j].textContent.split(/\s+/).length;
                 }
                 var avg_words_per_anchor = num_words/anchorNodes.length;
-                var inner_div_pctg = anchorLength/cLength; 
+                var inner_div_pctg = anchorLength/cLength;
                 // If the DIV has > thresholdPctg of its content within anchor nodes
                 // remove, the DIV.  Additionally we can also look at the number of words
                 // per anchor, but for now, that is not enabled
                 if (inner_div_pctg >= thresholdPctg) {
-                    tElem.parentNode.removeChild(tElem); 
+                    tElem.parentNode.removeChild(tElem);
                 }
             }
             else {
@@ -1344,19 +1344,19 @@ var Tranquility = {
             // If the DIV has a H1 child, then we want to retain the article
             // heading and not delete it.
             var h1elems = tElem.getElementsByTagName("H1");
-            if(h1elems.count > 0) 
+            if(h1elems.count > 0)
                 continue;
 
             var cLength = Tranquility.computeSize(tElem);
-            var pctg = cLength/totalSize; 
+            var pctg = cLength/totalSize;
             // Experimental; do not delete if the text content is > threshold of innerHTML
             // currently hardcoded; trying to do better with blog style pages and comments
             var ilength = tElem.innerHTML.replace('/\s/g', '').length + 1;
             //var ilength = tElem.innerHTML.length + 1;
-            var inner_html_pctg = cLength/ilength; 
+            var inner_html_pctg = cLength/ilength;
             if (((inner_html_pctg < 0.5) && (pctg < thresholdPctg)) || (cLength <= minSize)) {
                 //alert(tElem.id + "; " + cLength + "; " + totalSize + "; " + pctg + "; " + tElem.innerHTML);
-                tElem.parentNode.removeChild(tElem); 
+                tElem.parentNode.removeChild(tElem);
             }
             else {
                 // Do nothing
@@ -1374,8 +1374,8 @@ var Tranquility = {
             cArray[i] = c[i];
         }
         cArray.sort(function (a,b) { return b.innerHTML.length - a.innerHTML.length } );
-    
-        var tElem; 
+
+        var tElem;
         for(var i=0; i < len; i++) {
             tElem = cArray[len-i-1];
             if((tElem.parentNode != undefined) && (tElem.parentNode.tagName == tElem.tagName)) {
@@ -1388,9 +1388,9 @@ var Tranquility = {
                     // If grandparent exists replace parent with this element
                     // else, remove all siblings
                     var grandparent = tElem.parentNode.parentNode;
-                    if(grandparent != undefined) 
+                    if(grandparent != undefined)
                         grandparent.replaceChild(tElem.cloneNode(true), tElem.parentNode);
-                    else { 
+                    else {
                         var siblings = tElem.parentNode.childNodes;
                         for(var j=siblings.length - 1; j > -1; j--) {
                             if(siblings[j] !== tElem) {
@@ -1405,7 +1405,7 @@ var Tranquility = {
         }
     },
 
-    
+
     reformatTag: function(cdoc, tagString) {
 
         var c = cdoc.getElementsByTagName(tagString);
@@ -1417,9 +1417,9 @@ var Tranquility = {
         }
     },
 
-    
+
     cleanupNavLinks: function(url) {
- 
+
         var nlinks_div = Tranquility.gNavLinks[url];
         var nlinks = nlinks_div.getElementsByTagName('a');
         var nlinks_count = nlinks.length;
@@ -1428,13 +1428,13 @@ var Tranquility = {
         var intNavLinks = 0;
 
         for(var i=0; i < nlinks_count; i++) {
-            var navStr = nlinks[i].textContent.replace(/\s/g, ''); 
+            var navStr = nlinks[i].textContent.replace(/\s/g, '');
             if(navStr.search(navRegExp) != -1)
                 intNavLinks++;
         }
 
         for(var i=nlinks_count - 1; i > -1; i--) {
-            var navStr = nlinks[i].textContent.replace(/\s/g, ''); 
+            var navStr = nlinks[i].textContent.replace(/\s/g, '');
             // Remove the link if the number within is greater than the total number
             // of navigation links collected.  This will eliminate arbitrary links
             // that have numbers within them
@@ -1453,7 +1453,7 @@ var Tranquility = {
             else {
                 // Do nothing
             }
-            nLinkExists[navStr] = 1;    
+            nLinkExists[navStr] = 1;
         }
     },
 
@@ -1469,11 +1469,11 @@ var Tranquility = {
                 var aspect_ratio = images[im].height/images[im].width;
                 images[im].width = max_width;
                 images[im].height = max_width*aspect_ratio;
-            }  
-        } 
+            }
+        }
     },
 
-    
+
     removeWhiteSpaceComments: function(cdoc) {
 
         var cnodes = cdoc.childNodes;
@@ -1497,7 +1497,7 @@ var Tranquility = {
         }
     },
 
-  
+
     removeAnchorAttributes: function(cdoc) {
 
         var c = cdoc.getElementsByTagName('a');
@@ -1514,7 +1514,7 @@ var Tranquility = {
         }
     },
 
-    
+
     removeDuplicateAndBadLinks: function(cdoc, url) {
 
         var encodedURL = encodeURIComponent(url.split("#")[0]);
@@ -1562,14 +1562,14 @@ var Tranquility = {
         }
     },
 
-  
+
     onRightClick: function() {
-    
-        var link_rightclick_menuitem = document.getElementById("tranquility-link-rightclick-context"); 
-        var sel_wikipedia_menuitem = document.getElementById("tranquility-selection-rightclick-context-wikipedia"); 
-        var sel_dictionary_menuitem = document.getElementById("tranquility-selection-rightclick-context-dictionary"); 
-        var sel_annotation_menuitem = document.getElementById("tranquility-selection-rightclick-context-annotation"); 
-        var cdoc = gBrowser.getBrowserForTab(gBrowser.selectedTab).contentDocument; 
+
+        var link_rightclick_menuitem = document.getElementById("tranquility-link-rightclick-context");
+        var sel_wikipedia_menuitem = document.getElementById("tranquility-selection-rightclick-context-wikipedia");
+        var sel_dictionary_menuitem = document.getElementById("tranquility-selection-rightclick-context-dictionary");
+        var sel_annotation_menuitem = document.getElementById("tranquility-selection-rightclick-context-annotation");
+        var cdoc = gBrowser.getBrowserForTab(gBrowser.selectedTab).contentDocument;
 
         var not_tranquility_mode = true;
         if(cdoc.getElementById("tranquility_container"))
@@ -1589,7 +1589,7 @@ var Tranquility = {
         }
     },
 
-    
+
     applyFontPreferences: function(contentDoc) {
         // Apply font preferences
         var elems = contentDoc.documentElement.getElementsByTagName("*");
@@ -1603,9 +1603,9 @@ var Tranquility = {
                 elems[i].style.fontSize = this.prefs.getIntPref("defaultFontSize") + "px";
                 elems[i].style.fontFamily = this.prefs.getCharPref("defaultFont");
             }
-        }   
+        }
     },
-    
+
     observe: function(aSubject, aTopic, aData) {
 
         if(aTopic != "nsPref:changed") return;
@@ -1614,7 +1614,7 @@ var Tranquility = {
         if (aData == "enableSingleKeyMode") {
             if(this.prefs.getBoolPref("enableSingleKeyMode"))
                 document.getElementById("tranquility-single-key").setAttribute('disabled', 'false');
-            else 
+            else
                 document.getElementById("tranquility-single-key").setAttribute('disabled', 'true');
             return;
         }
@@ -1629,7 +1629,7 @@ var Tranquility = {
                     }
                     else {
                         cdoc.body.setAttribute('class', 'tranquility-no-image');
-                    }  
+                    }
                 }
                 else if(aData == "defaultFont") {
                     var newFont = this.prefs.getCharPref("defaultFont");
@@ -1639,9 +1639,9 @@ var Tranquility = {
                            elems[i].getAttribute('class') === 'tranquility_annotation_text' ||
                            elems[i].getAttribute('class') === 'tranquility_annotation_selection' ||
                            elems[i].getAttribute('class') === 'tranquility_annotation' ||
-                           elems[i].getAttribute('class') === 'tranquility_view_notes') 
+                           elems[i].getAttribute('class') === 'tranquility_view_notes')
                             elems[i].style.fontFamily = newFont;
-                    }   
+                    }
                 }
                 else if(aData == "defaultFontSize") {
                     var newSize = this.prefs.getIntPref("defaultFontSize");
@@ -1653,18 +1653,18 @@ var Tranquility = {
                            elems[i].getAttribute('class') === 'tranquility_annotation' ||
                            elems[i].getAttribute('class') === 'tranquility_view_notes')
                             elems[i].style.fontSize = newSize + "px";
-                    }   
+                    }
                 }
                 else if(aData == "defaultWidthPctg") {
                     var cdiv = cdoc.getElementById("tranquility_container");
-                    cdiv.style.width = this.prefs.getIntPref("defaultWidthPctg") + "%"; 
+                    cdiv.style.width = this.prefs.getIntPref("defaultWidthPctg") + "%";
                     var menu_div = cdoc.getElementById("tranquility_menu");
-                    menu_div.style.width = this.prefs.getIntPref("defaultWidthPctg") + "%"; 
+                    menu_div.style.width = this.prefs.getIntPref("defaultWidthPctg") + "%";
                     Tranquility.resizeImages(cdoc);
                 }
                 else if(aData == "defaultAlign") {
                     for(var i=0; i < elems.length; i++) {
-                        if((elems[i].getAttribute('class')) && 
+                        if((elems[i].getAttribute('class')) &&
                            (elems[i].getAttribute('class').substr(0,11) === 'tranquility') &&
                            (elems[i].getAttribute('class') !== 'tranquility_links') &&
                            (elems[i].getAttribute('class') !== 'tranquility_nav_links') &&
@@ -1675,23 +1675,23 @@ var Tranquility = {
                             elems[i].style.textAlign = this.prefs.getCharPref("defaultAlign");
                         }
                     }
-                }               
+                }
                 else if(aData == "defaultLineHeightPctg") {
                     for(var i=0; i < elems.length; i++) {
-                        if((elems[i].getAttribute('class')) && 
+                        if((elems[i].getAttribute('class')) &&
                            (elems[i].getAttribute('class').substr(0,11) === 'tranquility')) {
                             elems[i].style.lineHeight = this.prefs.getIntPref("defaultLineHeightPctg") + "%";
                         }
-                    }   
+                    }
                 }
                 else if((aData == "backgroundColor") || (aData == "useDefaultBackgroundColor")) {
-                    if(aData == "backgroundColor") { 
+                    if(aData == "backgroundColor") {
                         this.prefs.setBoolPref("useDefaultBackgroundColor", false);
                         this.prefs.setBoolPref("useBackgroundImage", false);
                     }
                     var newBGColor = this.prefs.getCharPref("backgroundColor");
                     for(var i=0; i < elems.length; i++) {
-                        if((elems[i].getAttribute('class')) && 
+                        if((elems[i].getAttribute('class')) &&
                            (elems[i].getAttribute('class') != 'tranquility_links') &&
                            (elems[i].getAttribute('class') != 'tranquility_masker') &&
                            (elems[i].getAttribute('class').substr(0,11) === 'tranquility')) {
@@ -1702,14 +1702,14 @@ var Tranquility = {
                                 elems[i].style.backgroundColor = newBGColor;
                             }
                         }
-                    }   
+                    }
                 }
                 else if((aData == "fontColor") || (aData == "useDefaultFontColor")) {
                     if(aData == "fontColor")
                         this.prefs.setBoolPref("useDefaultFontColor", false);
                     var newFontColor = this.prefs.getCharPref("fontColor");
                     for(var i=0; i < elems.length; i++) {
-                        if((elems[i].getAttribute('class')) && 
+                        if((elems[i].getAttribute('class')) &&
                            (elems[i].getAttribute('class').substr(0,11) === 'tranquility')) {
                             if(this.prefs.getBoolPref("useDefaultFontColor")) {
                                 elems[i].style.color = "#000000";
@@ -1718,14 +1718,14 @@ var Tranquility = {
                                 elems[i].style.color = newFontColor;
                             }
                         }
-                    }   
+                    }
                 }
                 else if((aData == "linkColor") || (aData == "useDefaultLinkColor")) {
                     if(aData == "linkColor")
                         this.prefs.setBoolPref("useDefaultLinkColor", false);
                     var newLinkColor = this.prefs.getCharPref("linkColor");
                     for(var i=0; i < elems.length; i++) {
-                        if(elems[i].tagName == 'A') { 
+                        if(elems[i].tagName == 'A') {
                             if(this.prefs.getBoolPref("useDefaultLinkColor")) {
                                 elems[i].style.color = "#0000FF";
                             }
@@ -1733,18 +1733,18 @@ var Tranquility = {
                                 elems[i].style.color = newLinkColor;
                             }
                         }
-                    }   
+                    }
                 }
                 else if((aData == "annotationHighlightColor")) {
                     var newHighlightColor = this.prefs.getCharPref("annotationHighlightColor");
                     for(var i=0; i < elems.length; i++) {
-                        if(elems[i].className == 'tranquility_annotation_selection') { 
+                        if(elems[i].className == 'tranquility_annotation_selection') {
                             elems[i].style.backgroundColor = newHighlightColor;
                         }
-                    }   
+                    }
                 }
             }
-        }   
+        }
     },
 
 
@@ -1752,9 +1752,9 @@ var Tranquility = {
         window.open("chrome://tranquility/content/tranquility_options.xul", "", "chrome");
     },
 
-    
+
     onTabClose: function(event) {
-     
+
         var browser = gBrowser.getBrowserForTab(event.target);
         var url = browser.currentURI.spec;
         if(Tranquility.gOrigDoc[url] != undefined) {
@@ -1766,7 +1766,7 @@ var Tranquility = {
         }
     },
 
-    
+
     onURLChange: function(aURI) {
 
         var openURLs = [];
@@ -1788,12 +1788,12 @@ var Tranquility = {
                 delete Tranquility.gNavLinks[cachedURLs[i]];
                 delete Tranquility.gDOMLoaded[cachedURLs[i]];
             }
-        } 
+        }
     },
 
 
     readLater: function(newTabBrowser) {
-  
+
         var thisURL = newTabBrowser.currentURI.spec;
         var contentDoc = newTabBrowser.contentDocument;
         // If in tranquility view, then simply save content in DB
@@ -1806,11 +1806,11 @@ var Tranquility = {
             Tranquility.saveContentOffline(thisURL);
         }
     },
-  
+
 
     saveContentOffline: function(thisURL) {
 
-        var db;   
+        var db;
         var request = indexedDB.open("Tranquility_Offline_Content", 1);
 
         var strBundle = document.getElementById("tranquility-string-bundle");
@@ -1818,7 +1818,7 @@ var Tranquility = {
         var duplicateURLErrorString = strBundle.getString('duplicateURLErrorString');
 
         // Handle first time (database creation)
-        request.onupgradeneeded = function(event) {    
+        request.onupgradeneeded = function(event) {
             var db = event.target.result;
             var objectStore = db.createObjectStore("offline_content", {keyPath: "url"});
         };
@@ -1842,23 +1842,23 @@ var Tranquility = {
             indata.url = thisURL;
             indata.title = doctitle;
             var s = new XMLSerializer();
-            indata.contentDoc = s.serializeToString(cdoc); 
-            // Modifying this from 'add' to 'put' in version 1.1.5.  
-            // This is required to update the IndexedDB when we add 
+            indata.contentDoc = s.serializeToString(cdoc);
+            // Modifying this from 'add' to 'put' in version 1.1.5.
+            // This is required to update the IndexedDB when we add
             // annotations to the document and save the updated content.
-            //var req = offline_docStore.add(indata); 
-            var req = offline_docStore.put(indata); 
+            //var req = offline_docStore.add(indata);
+            var req = offline_docStore.put(indata);
             req.onsuccess = function(event) {
             };
             req.onerror = function(event) {
                 alert(duplicateURLErrorString);
-            };      
+            };
         };
     },
 
 
     displayOfflineFiles: function() {
-   
+
         var newTabBrowser = gBrowser.getBrowserForTab(gBrowser.selectedTab);
         var contentDoc = newTabBrowser.contentDocument;
 
@@ -1866,7 +1866,7 @@ var Tranquility = {
         var dbOpenErrorString = strBundle.getString('dbOpenErrorString');
 
         var links_div = contentDoc.getElementById('tranquility_offline_links');
-    
+
         // If div exists, delete and recreate children from IndexedDB
         if(links_div) {
             while( links_div.hasChildNodes() ){
@@ -1890,12 +1890,12 @@ var Tranquility = {
             contentDoc.body.appendChild(links_div);
             links_div.addEventListener("click", Tranquility.handleClickEvent, false);
         }
-        
+
         var db;
         var request = indexedDB.open("Tranquility_Offline_Content", 1);
 
         // Handle first time (database creation)
-        request.onupgradeneeded = function(event) {    
+        request.onupgradeneeded = function(event) {
             var db = event.target.result;
             var objectStore = db.createObjectStore("offline_content", {keyPath: "url"});
         };
@@ -1918,14 +1918,14 @@ var Tranquility = {
                     var p_elem = contentDoc.createElement('p');
                     p_elem.setAttribute('class', 'tranquility_offline_link');
                     p_elem.setAttribute('id', cursor.key);
-              
+
                     var del_img = contentDoc.createElement('img');
                     del_img.setAttribute('class', 'tranquility_delete_offline_link');
                     del_img.href = cursor.key;
                     del_img.src = "resource://tranquility-icons/delete_icon.png";
                     del_img.setAttribute('height', '20px');
                     del_img.setAttribute('width', '20px');
-              
+
                     var del_a_elem = contentDoc.createElement('a');
                     del_a_elem.setAttribute('class', 'tranquility_delete_offline_link');
                     del_a_elem.href = cursor.key;
@@ -1949,8 +1949,8 @@ var Tranquility = {
             };
         };
     },
-  
-  
+
+
     loadDocFromDB: function(thisURL) {
 
         var newTabBrowser = gBrowser.getBrowserForTab(gBrowser.selectedTab);
@@ -1964,7 +1964,7 @@ var Tranquility = {
         var request = indexedDB.open("Tranquility_Offline_Content", 1);
 
         // Handle first time (database creation)
-        request.onupgradeneeded = function(event) {    
+        request.onupgradeneeded = function(event) {
             var db = event.target.result;
             var objectStore = db.createObjectStore("offline_content", {keyPath: "url"});
         };
@@ -1995,12 +1995,12 @@ var Tranquility = {
                 var btn = contentDoc.getElementById('tranquility_offline_links_btn');
                 btn.setAttribute('data-active-link', thisURL);
                 Tranquility.addBackEventListeners(contentDoc);
-                Tranquility.gTranquilDoc[thisURL] = contentDoc.cloneNode(true);                
-            };      
+                Tranquility.gTranquilDoc[thisURL] = contentDoc.cloneNode(true);
+            };
         };
     },
-  
-    
+
+
     delDocFromDB: function(thisURL) {
 
         var newTabBrowser = gBrowser.getBrowserForTab(gBrowser.selectedTab);
@@ -2009,12 +2009,12 @@ var Tranquility = {
         var strBundle = document.getElementById("tranquility-string-bundle");
         var dbOpenErrorString = strBundle.getString('dbOpenErrorString');
         var urlNotDeletedErrorString = strBundle.getString('urlNotDeletedErrorString');
-    
-        var db; 
+
+        var db;
         var request = indexedDB.open("Tranquility_Offline_Content", 1);
 
         // Handle first time (database creation)
-        request.onupgradeneeded = function(event) {    
+        request.onupgradeneeded = function(event) {
             var db = event.target.result;
             var objectStore = db.createObjectStore("offline_content", {keyPath: "url"});
         };
@@ -2040,14 +2040,14 @@ var Tranquility = {
                 // Do something with the request.result!
                 var links_p = contentDoc.getElementById(thisURL);
                 links_p.parentNode.removeChild(links_p);
-            };      
+            };
         };
     },
 
- 
+
     addAnnotation: function(newTabBrowser) {
 
-        var contentDoc = newTabBrowser.contentDocument;       
+        var contentDoc = newTabBrowser.contentDocument;
         var cDocBkp = contentDoc.cloneNode(true);
         var selObj = contentDoc.getSelection();
         var masker = contentDoc.getElementById('tranquility_masker');
@@ -2057,7 +2057,7 @@ var Tranquility = {
         var parent_span = contentDoc.createElement('span');
         parent_span.setAttribute('class', 'tranquility_annotation');
         parent_span.setAttribute('align', 'right');
-     
+
         // Separate the selection range to a new span and highlight it
         // using the annotation background color
         var sel_span = contentDoc.createElement('span');
@@ -2067,12 +2067,12 @@ var Tranquility = {
         var selectionSpan = sel_span.cloneNode(true);
         parent_span.appendChild(selectionSpan);
         range.insertNode(parent_span);
-       
+
         // Create a form for entering the annotation;
         // if Submitted, then create annotation; else cancel
         var entryDiv = contentDoc.createElement('div');
         entryDiv.setAttribute('class', 'tranquility_annotation_entry');
-        var note_width = Tranquility.prefs.getIntPref("defaultWidthPctg"); 
+        var note_width = Tranquility.prefs.getIntPref("defaultWidthPctg");
         var delta = (100 - note_width)/2;
         var target_width = Math.round(note_width * 0.8);
         entryDiv.style.width = target_width + "%";
@@ -2080,7 +2080,7 @@ var Tranquility = {
         contentDoc.body.appendChild(entryDiv);
 
         entryDiv.appendChild(contentDoc.createElement('p').cloneNode(true));
-        
+
         var annotationText = contentDoc.createElement('textarea');
         annotationText.setAttribute('textAlign', 'left');
         annotationText.style.width = "70%";
@@ -2088,41 +2088,41 @@ var Tranquility = {
         annotationText.style.overflowY = 'scroll';
         annotationText.style.resize = 'none';
         entryDiv.appendChild(annotationText);
-        
+
         entryDiv.appendChild(contentDoc.createElement('p').cloneNode(true));
-        
+
         var submitButton = contentDoc.createElement('input');
         submitButton.setAttribute('type', 'button');
         submitButton.setAttribute('value', 'Submit');
         entryDiv.appendChild(submitButton);
-        
+
         var cancelButton = contentDoc.createElement('input');
         cancelButton.setAttribute('type', 'button');
         cancelButton.setAttribute('value', 'Cancel');
         entryDiv.appendChild(cancelButton);
-                
+
         submitButton.onclick = function() {
 
             var selectionSpan = parent_span.childNodes[0];
             selectionSpan.style.backgroundColor = Tranquility.prefs.getCharPref("annotationHighlightColor");
-            
+
             // Add a place holder annotation text for now; will enhance later
             // to allow users to edit this content
             var note_p = contentDoc.createElement('p');
             note_p.setAttribute('class', 'tranquility_annotation_text');
-            //note_p.textContent = "\n*****************************\n" + selectionSpan.textContent  + 
+            //note_p.textContent = "\n*****************************\n" + selectionSpan.textContent  +
             //                     "\n*****************************\n\n" + annotationText.value;
             note_p.textContent = annotationText.value;
             parent_span.appendChild(note_p.cloneNode(true));
-            
+
             // Create an event listener to capture mouse click on the iframe (to hide if required)
             parent_span.addEventListener("click", Tranquility.handleClickEvent, false);
-            
+
             // delete the entry div
             entryDiv.parentNode.removeChild(entryDiv);
             var masker = contentDoc.getElementById('tranquility_masker');
             masker.style.visibility = 'hidden';
-            
+
             // Save the updated content to the database
             var btn = contentDoc.getElementById('tranquility_offline_links_btn');
             // We could either be adding annotations to the offline content in which case
@@ -2143,13 +2143,13 @@ var Tranquility = {
                 Tranquility.saveContentOffline(url);
             }
         };
-        
+
         cancelButton.onclick = function() {
             // On cancellation, restore the contentDoc from the backup
             Tranquility.addBackEventListeners(cDocBkp);
             contentDoc.replaceChild(cDocBkp.documentElement, contentDoc.documentElement);
         };
-        
+
     },
 
     createAnnotationNote: function(contentDoc, note_p, read_width, ycoord) {
@@ -2186,10 +2186,10 @@ var Tranquility = {
 
         view_notes_div.addEventListener("click", Tranquility.handleClickEvent, false);
         contentDoc.body.appendChild(view_notes_div);
-        
+
         var emptyp = contentDoc.createElement('p');
         var hline = contentDoc.createElement('hr');
-        
+
         var notes = contentDoc.getElementsByClassName('tranquility_annotation');
         for (var i=0; i < notes.length; i++) {
             var sel = notes[i].getElementsByClassName('tranquility_annotation_selection')[0].cloneNode(true);
@@ -2205,7 +2205,7 @@ var Tranquility = {
                 note.appendChild(note_p.cloneNode(true));
                 view_notes_div.appendChild(note.cloneNode(true));
                 view_notes_div.appendChild(emptyp.cloneNode(true));
-                view_notes_div.appendChild(hline.cloneNode(true));            
+                view_notes_div.appendChild(hline.cloneNode(true));
             }
         }
 
@@ -2213,7 +2213,7 @@ var Tranquility = {
             var strBundle = document.getElementById("tranquility-string-bundle");
             view_notes_div.textContent = strBundle.getString('noNotes');
         }
-        
+
         var delta = (100 - read_width)/2;
         var note_width = Math.round(read_width * 0.8);
         view_notes_div.style.width = note_width + "%";
@@ -2223,17 +2223,17 @@ var Tranquility = {
         Tranquility.applyFontPreferences(contentDoc);
         return view_notes_div;
     },
-    
+
     addBackEventListeners: function(cdoc) {
 
-        // Add back click event listener to body 
+        // Add back click event listener to body
         cdoc.body.addEventListener("click", Tranquility.handleClickEvent, false);
 
         // Add back click event listener to more links button
         var links_button_div = cdoc.getElementById('tranquility_more_links_btn');
         if(links_button_div != undefined)
             links_button_div.addEventListener("click", Tranquility.handleClickEvent, false);
- 
+
         // Add back click event listener to offline links button
         var offlinefiles_button_div = cdoc.getElementById('tranquility_offline_links_btn');
         if(offlinefiles_button_div != undefined)
@@ -2243,20 +2243,20 @@ var Tranquility = {
         var readlater_button_div = cdoc.getElementById('tranquility_read_later_btn');
         if(readlater_button_div != undefined)
             readlater_button_div.addEventListener("click", Tranquility.handleClickEvent, false);
-       
+
         // Add back click event listener to view notes button
         var viewnotes_button_div = cdoc.getElementById('tranquility_viewnotes_btn');
         if(viewnotes_button_div != undefined)
             viewnotes_button_div.addEventListener("click", Tranquility.handleClickEvent, false);
-       
-        // Add back click event listener to dictionary iframe 
+
+        // Add back click event listener to dictionary iframe
         var dict_frame = cdoc.getElementById('tranquility_dictionary');
         if(dict_frame != undefined)
             dict_frame.addEventListener("click", Tranquility.handleClickEvent, false);
-            
+
     },
 
-    
+
     onUnload: function() {
 
         // Remove progress listener
@@ -2264,12 +2264,12 @@ var Tranquility = {
         gBrowser.tabContainer.removeEventListener("TabClose", Tranquility.onTabClose, false);
 
         if(!this.prefs) return;
-    
+
         this.prefs.removeObserver("", this);
         return;
     }
 };
 
-window.addEventListener("load", function(e) { Tranquility.onLoad(e); }, false); 
-window.addEventListener("unload", function(e) { Tranquility.onUnload(e); }, false); 
+window.addEventListener("load", function(e) { Tranquility.onLoad(e); }, false);
+window.addEventListener("unload", function(e) { Tranquility.onUnload(e); }, false);
 
